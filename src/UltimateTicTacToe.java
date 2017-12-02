@@ -7,19 +7,20 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class UltimateTicTacToe {
-
+	
 	public UltimateTicTacToe() {
 		JFrame frame = new JFrame();
-		JPanel panel = new JPanel(); //{
-//			protected void paintComponent(Graphics g) {
-//				Graphics2D g2 = (Graphics2D) g;
-//				g2.setStroke(new BasicStroke(10));
-//				g2.drawLine(170, 0, 170, 450);
-//				g2.drawLine(300, 0, 300, 450);
-//				g2.drawLine(0, 150, 450, 150);
-//				g2.drawLine(0, 300, 450, 300);
-//			}
-//		};
+		JPanel panel = new JPanel() {
+			protected void paintComponent(Graphics g2) {
+				//Graphics2D g2 = (Graphics2D) g;
+				//g2.setStroke(new BasicStroke(10));
+				g2.drawLine(0, 0, 300, 300);
+				g2.drawLine(170, 0, 170, 450);
+				g2.drawLine(300, 0, 300, 450);
+				g2.drawLine(0, 150, 450, 150);
+				g2.drawLine(0, 300, 450, 300);
+			}
+		};
 		panel.setLayout(new GridLayout(3,3));
 		for(int i = 0; i<9; i++)
 			panel.add(new BasicTicTacToe());

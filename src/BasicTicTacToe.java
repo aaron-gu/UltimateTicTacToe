@@ -11,9 +11,9 @@ import javax.swing.JPanel;
 
 public class BasicTicTacToe extends JPanel{
 	
+	public boolean turn = true; // true is X, false is O, X moves first
 	public boolean[][] xo = new boolean[3][3]; //helps check win
 	public JButton[][] buttonMatrix = new JButton[3][3];
-	public boolean turn = true; // true is X, false is O, X moves first
 	
 	public BasicTicTacToe(){
 		JPanel panel = new JPanel() {
@@ -53,10 +53,5 @@ public class BasicTicTacToe extends JPanel{
 			}
 		}
 	}
-	
-//	public static void main(String[] args) {
-//		// TODO Auto-generated method stub
-//		new BasicTicTacToe();
-//	}
 
 }
