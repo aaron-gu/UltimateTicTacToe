@@ -1,4 +1,5 @@
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class UltimateTicTacToe {
@@ -28,23 +30,34 @@ public class UltimateTicTacToe {
 		}
 	};
 	
+	JPanel guiPanel;
+	JLabel turn;
 	
 	public UltimateTicTacToe() {
-		createUltimateBoard();
+		createGUIBoard();
 		frame.setVisible(true);
 		frame.setTitle("Ultimate Tic-Tac-Toe");
-		frame.setSize(450, 475);
+		frame.setSize(450, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		frame.setLocationRelativeTo(null);
 	}
 	
+	public void createGUIBoard() {
+		guiPanel = new JPanel();
+		guiPanel.setLayout(new BorderLayout());
+		JPanel movePanel = new JPanel(); //panel to center the JLabel
+		turn = new JLabel("X's Move");
+		movePanel.add(turn);
+		guiPanel.add(movePanel, BorderLayout.NORTH);
+		createUltimateBoard();
+		frame.add(guiPanel, BorderLayout.CENTER);
+	}
 	
 	public void createUltimateBoard() {
 		ultimatePanel.setLayout(new GridLayout(3,3));
 		for(int i = 0; i<9; i++)
 			createBasicBoard();
-		
-		frame.add(ultimatePanel);
+		guiPanel.add(ultimatePanel);
 	}
 	
 	public void createBasicBoard(){
@@ -63,6 +76,7 @@ public class UltimateTicTacToe {
 			for(int c = 0; c<3; c++) {
 				xo[r][c] = true;
 				JButton matrixAdd = new JButton();
+				matrixAdd.setPreferredSize(new Dimension(35, 35));
 				matrixAdd.addActionListener(new MoveActionListener());
 				buttonMatrix[r][c] = matrixAdd;
 				panel.add(buttonMatrix[r][c]);
@@ -76,11 +90,13 @@ public class UltimateTicTacToe {
 			((JButton) e.getSource()).setEnabled(false);
 			if(moves%2 == 1) {
 				((JButton) e.getSource()).setText("X");
+				turn.setText("O's Move");
 				moves++;
 
 			}
 			else {
 				((JButton) e.getSource()).setText("O");
+				turn.setText("X's Move");
 				moves++;
 			}
 		}
