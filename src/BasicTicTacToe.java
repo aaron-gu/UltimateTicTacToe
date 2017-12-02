@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class BasicTicTacToe extends JPanel{
 	
-	public boolean turn = true; // true is X, false is O, X moves first
+	public int moves = 1; // true is X, false is O, X moves first
 	public boolean[][] xo = new boolean[3][3]; //helps check win
 	public JButton[][] buttonMatrix = new JButton[3][3];
 	
@@ -42,16 +42,19 @@ public class BasicTicTacToe extends JPanel{
 	public class MoveActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			((JButton) e.getSource()).setEnabled(false);
-			if(turn == true) {
+			if(moves%2 == 1) {
 				((JButton) e.getSource()).setText("X");
-				turn = false;
-				
+				moves++;
+
 			}
 			else {
 				((JButton) e.getSource()).setText("O");
-				turn = true;
+				moves++;
 			}
 		}
 	}
-
+	
+//	public static void main(String[] args) {
+//		new BasicTicTacToe();
+//	}
 }
