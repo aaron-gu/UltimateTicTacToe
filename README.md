@@ -12,7 +12,7 @@ If a player sends the other player to a completed board, the other player can th
 
 I built the game using Java Swing. Features I would like to add are:
 
-* automatically checking if a board is won
+* checking if a board is won after each move
 * undo move
 * highlighting the current board to move, and disabling all other boards
 * and a more daring feature - checking if a game can be won (I imagine this would require some kind of recursion to check all possible moves)
