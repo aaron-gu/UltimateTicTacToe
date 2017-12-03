@@ -6,4 +6,4 @@ I started this project on 12/2/17, MLH Local Hack Day. Ultimate Tic Tac Toe is a
 The catch is that your move on one of the smaller boards will send your opponent to the corresponding board. 
 Example below:
 
-!["X moves and sends O to the right-middle board"](/relative/path/to/ExampleMove.jpg?raw=true)
+!["X moves and sends O to the right-middle board"](https://github.com/aaron-gu/UltimateTicTacToe/blob/master/ExampleMove.jpg)
