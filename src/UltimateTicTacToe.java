@@ -20,6 +20,11 @@ public class UltimateTicTacToe {
 	
 	JFrame frame = new JFrame();
 	JPanel ultimatePanel = new JPanel() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setStroke(new BasicStroke(10));
@@ -33,11 +38,13 @@ public class UltimateTicTacToe {
 	JPanel guiPanel;
 	JLabel turn;
 	
+	JButton lastPressed;
+	
 	public UltimateTicTacToe() {
 		createGUIBoard();
 		frame.setVisible(true);
 		frame.setTitle("Ultimate Tic-Tac-Toe");
-		frame.setSize(450, 500);
+		frame.setSize(450, 530);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		frame.setLocationRelativeTo(null);
 	}
@@ -51,6 +58,9 @@ public class UltimateTicTacToe {
 		guiPanel.add(movePanel, BorderLayout.NORTH);
 		createUltimateBoard();
 		frame.add(guiPanel, BorderLayout.CENTER);
+		JButton undo = new JButton("Undo");
+		undo.addActionListener(new UndoActionListener());
+		guiPanel.add(undo, BorderLayout.SOUTH);
 	}
 	
 	public void createUltimateBoard() {
@@ -62,6 +72,11 @@ public class UltimateTicTacToe {
 	
 	public void createBasicBoard(){
 		JPanel panel = new JPanel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			protected void paintComponent(Graphics g) { //resets the stroke from the previous graphics2D
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setStroke(new BasicStroke(2));
@@ -99,6 +114,15 @@ public class UltimateTicTacToe {
 				turn.setText("X's Move");
 				moves++;
 			}
+			lastPressed = (JButton) e.getSource();
+		}
+	}
+	
+	public class UndoActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			lastPressed.setEnabled(true);
+			lastPressed.setText("");
+			moves--;
 		}
 	}
 	public static void main(String[] args) {
