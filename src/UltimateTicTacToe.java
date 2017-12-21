@@ -18,14 +18,11 @@ import javax.swing.border.Border;
 public class UltimateTicTacToe {
 
 	public int moves = 0; // true is X, false is O, X moves first
-	public boolean[][] xo = new boolean[3][3]; //helps check win
-	public JButton[][] buttonMatrix = new JButton[3][3];
+	public boolean[][] xo = new boolean[3][3]; //EVENTUALLY helps check win
 	
 	//panel that fills the screen and has the thick board lines
 	JPanel ultimatePanel = new JPanel() {
-		/**
-		 * 
-		 */
+
 		private static final long serialVersionUID = 1L;
 
 		protected void paintComponent(Graphics g) {
@@ -89,9 +86,6 @@ public class UltimateTicTacToe {
 
 	public void createBasicBoard(){
 		JPanel panel = new JPanel() {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			protected void paintComponent(Graphics g) { //resets the stroke from the previous graphics2D
@@ -104,6 +98,7 @@ public class UltimateTicTacToe {
 			}
 		};
 		panel.setLayout(new GridLayout(3,3));
+		JButton[][] buttonMatrix = new JButton[3][3];
 		for(int r = 0; r<3; r++) {
 			for(int c = 0; c<3; c++) {
 				xo[r][c] = true;
@@ -143,7 +138,8 @@ public class UltimateTicTacToe {
 			}
 
 			JButton pressed = (JButton) e.getSource();
-			//cannot be changed anymore (unless undo)
+			
+			
 			pressed.setEnabled(false);
 			//the whole button will be yellow
 			pressed.setOpaque(true);
@@ -166,15 +162,18 @@ public class UltimateTicTacToe {
 		}
 	}
 
+	
 	/*
 	 * Action Listener for the Undo button
 	 */
 	public class UndoActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			//resetting the button to its original state
+			//can only undo the last made move
 			if(lastPressed != null) {
+				//resetting the button to its original state
 				lastPressed.setEnabled(true);
 				lastPressed.setBackground(null);
+				lastPressed.setBorderPainted(false);
 				lastPressed.setText("");
 				
 				//going back one move
