@@ -1,198 +1,213 @@
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
-public class UltimateTicTacToe {
+public class UltimateTicTacToe extends JPanel {
 
-	public int moves = 0; // true is X, false is O, X moves first
-	public boolean[][] xo = new boolean[3][3]; //EVENTUALLY helps check win
+	private static final long serialVersionUID = 2L;
 	
-	//panel that fills the screen and has the thick board lines
-	JPanel ultimatePanel = new JPanel() {
-
-		private static final long serialVersionUID = 1L;
-
-		protected void paintComponent(Graphics g) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setStroke(new BasicStroke(10));
-			g2.drawLine(150, 0, 150, 450);
-			g2.drawLine(300, 0, 300, 450);
-			g2.drawLine(0, 150, 450, 150);
-			g2.drawLine(0, 300, 450, 300);
-		}
-	};
+	public static int move = 0; // the number of moves elapsed
+	public static BasicTicTacToe[][] boards = new BasicTicTacToe[3][3]; // contains the 9 tictactoe boards
+	public static String correctBoard = ""; // which board the next move must be played in,
+										   // "" means the move can be played in any board
+	public static boolean gameOver = false;
 	
-	//the panel that fills the frame
-	JPanel guiPanel;
+	private JPanel messages; public static JLabel msg; // says whose turn it is and other messages
+	private JPanel grid; // where the game is played
+	private JPanel functions; // the undo and restart buttons
 	
-	//label for whose turn it is (shows up at top of GUI)
-	JLabel turn;
-	
-	//keeps track of the last pressed button in order to undo
-	JButton lastPressed = null;
-
-	//color to indicate the last move
-	Color lightyellow = new Color(252, 255, 131);
-
-	
-	
-	/*
-	 * constructor for the frame
-	 */
 	public UltimateTicTacToe() {
-		JFrame frame = new JFrame();
-		createGUIBoard();
-		frame.add(guiPanel);
-		frame.setVisible(true);
-		frame.setTitle("Ultimate Tic-Tac-Toe");
-		frame.setSize(450, 530);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-		frame.setLocationRelativeTo(null);
-	}
-
-	public void createGUIBoard() {
-		guiPanel = new JPanel();
-		guiPanel.setLayout(new BorderLayout());
-		JPanel movePanel = new JPanel(); //panel to center the JLabel
-		turn = new JLabel("X's Move");
-		movePanel.add(turn);
-		guiPanel.add(movePanel, BorderLayout.NORTH);
-		createUltimateBoard();
-		JButton undo = new JButton("Undo");
-		undo.addActionListener(new UndoActionListener());
-		guiPanel.add(undo, BorderLayout.SOUTH);
+		this.setLayout(new BorderLayout());
+		messages = new JPanel();
+		msg = new JLabel("Welcome to Ultimate Tic Tac Toe! X moves first on any board");
+		messages.add(msg);
+		this.add(messages, BorderLayout.NORTH);
 		
-	}
-
-	public void createUltimateBoard() {
-		ultimatePanel.setLayout(new GridLayout(3,3));
-		for(int i = 0; i<9; i++)
-			createBasicBoard();
-		guiPanel.add(ultimatePanel, BorderLayout.CENTER);
-	}
-
-	public void createBasicBoard(){
-		JPanel panel = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			protected void paintComponent(Graphics g) { //resets the stroke from the previous graphics2D
+		grid = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
 				Graphics2D g2 = (Graphics2D) g;
-				g2.setStroke(new BasicStroke(2));
-				g2.drawLine(50, 0, 50, 300);
-				g2.drawLine(100, 0, 100, 300);
-				g2.drawLine(0, 50, 300, 50);
-				g2.drawLine(0, 100, 300, 100);
+				super.paintComponent(g2);
+				g2.setStroke(new BasicStroke(6));
+				g.drawLine(10, 195, 615, 195); //horizontal lines
+				g.drawLine(10, 392, 615, 392);
+				g.drawLine(210, 10, 210, 575); //vertical lines
+				g.drawLine(417, 10, 417, 575);
 			}
 		};
-		panel.setLayout(new GridLayout(3,3));
-		JButton[][] buttonMatrix = new JButton[3][3];
-		for(int r = 0; r<3; r++) {
-			for(int c = 0; c<3; c++) {
-				xo[r][c] = true;
-
-				//create button size and action listener
-				JButton matrixAdd = new JButton();
-				matrixAdd.setPreferredSize(new Dimension(35, 35));
-				matrixAdd.addActionListener(new MoveActionListener());
-
-				//makes it so the board doesn't look like it has buttons
-				matrixAdd.setBorder(null);
-
-				//turn off the focus listener
-				matrixAdd.setFocusable(false);
-				
-				//add to the matrix
-				buttonMatrix[r][c] = matrixAdd;
-
-				//add to the panel
-				panel.add(buttonMatrix[r][c]);
+		grid.setLayout(new GridLayout(3,3));
+		for(int r = 0; r < 3; r++) {
+			for(int c = 0; c < 3; c++) {
+				boards[r][c] = new BasicTicTacToe();
+				boards[r][c].setPosition("" + r + c);
+				grid.add(boards[r][c]);
 			}
 		}
-		ultimatePanel.add(panel);
+		this.add(grid, BorderLayout.CENTER);
+		
+		
+		JButton undo = new JButton("Undo");
+		undo.addActionListener(new UndoActionListener());
+		undo.setFocusable(false);
+		UndoActionListener.correctBoardList.add(""); // pad the list
+		
+		JButton restart = new JButton("Restart");
+		restart.addActionListener(new RestartActionListener());
+		restart.setFocusable(false);
+		
+		functions = new JPanel();
+		functions.add(undo);
+		functions.add(restart);
+		
+		this.add(functions, BorderLayout.SOUTH);
 	}
-
-	/*
-	 * Action Listener for every button pressed / move made
-	 */
-	public class MoveActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			//changing the previously pressed button back to gray
-			if(lastPressed!=null) {
-				lastPressed.setFocusPainted(false);
-				lastPressed.setContentAreaFilled(false);
-				lastPressed.setBackground(null);
-				lastPressed.setBorder(null);
-			}
-
-			JButton pressed = (JButton) e.getSource();
-			
-			
-			pressed.setEnabled(false);
-			//the whole button will be yellow
-			pressed.setOpaque(true);
-			pressed.setBackground(lightyellow);
-			//keeps it so there is no visible button
-			pressed.setBorder(null);
-			
-
-			//changing the button and turn counter
-			moves++;
-			if(moves%2 == 1) {
-				pressed.setText("X");
-				turn.setText("O's Move");
-			}
-			else {
-				pressed.setText("O");
-				turn.setText("X's Move");
-			}
-			lastPressed = pressed;
-		}
-	}
-
 	
-	/*
-	 * Action Listener for the Undo button
-	 */
-	public class UndoActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			//can only undo the last made move
-			if(lastPressed != null) {
-				//resetting the button to its original state
-				lastPressed.setEnabled(true);
-				lastPressed.setBackground(null);
-				lastPressed.setBorderPainted(false);
-				lastPressed.setText("");
-				
-				//going back one move
-				moves--;
-				//changing the turn counter
-				if(moves%2 == 1)
-					turn.setText("O's Move");
-				else
-					turn.setText("X's Move");
-				
-				//undo cannot do anything until another move is made
-				lastPressed = null;
+	/* Called after each move in MoveActionListener */
+	public static boolean checkWin() {
+		return checkHorizontal() || checkVertical() || checkDiagonal();
+	}
+	
+	/* Helper methods for checkWin() */
+	private static boolean checkHorizontal() {
+		for(int i = 0; i < 3; i++) {
+			if(boards[i][0].getWinner().equals(boards[i][1].getWinner())
+					&& boards[i][1].getWinner().equals(boards[i][2].getWinner())
+					&& !boards[i][0].getWinner().equals("") 
+					&& !boards[i][0].getWinner().equals("XO")) {
+				return gameWon(i, 0);
 			}
 		}
+		return false;
 	}
-
+	private static boolean checkVertical() {
+		for(int i = 0; i < 3; i++) {
+			if(boards[0][i].getWinner().equals(boards[1][i].getWinner())
+					&& boards[1][i].getWinner().equals(boards[2][i].getWinner())
+					&& !boards[0][i].getWinner().equals("") 
+					&& !boards[0][i].getWinner().equals("XO")) {
+				return gameWon(0, i);
+			}
+		}
+		return false;
+	}
+	private static boolean checkDiagonal() {
+		if(boards[0][0].getWinner().equals(boards[1][1].getWinner())
+				&& boards[1][1].getWinner().equals(boards[2][2].getWinner())
+				&& !boards[0][0].getWinner().equals("")
+				&& !boards[0][0].getWinner().equals("XO")) {
+			return gameWon(0, 0);
+		}
+		if(boards[2][0].getWinner().equals(boards[1][1].getWinner())
+				&& boards[1][1].getWinner().equals(boards[0][2].getWinner())
+				&& !boards[2][0].getWinner().equals("")
+				&& !boards[2][0].getWinner().equals("XO")) {
+			return gameWon(2, 0);
+		}
+		return false;
+	}
+	/* Helper method to null all boards when the game is won and display the winner [i, j] */
+	private static boolean gameWon(int i, int j) {
+		msg.setText(boards[i][j].getWinner() + " wins!");
+		for(int r = 0; r < 3; r++) {
+			for(int c = 0; c < 3; c++) {
+				boards[r][c].disableAll();
+			}
+		}
+		gameOver = true;
+		return true; //always returns true because it is called when a board is won
+	}
+	
+	/* Sets the correctBoard and processes the previous board */
+	public static void setNextBoard(String pos) {
+		// gray out previous board if it's not won
+		String prevBoard = correctBoard;
+		if(!prevBoard.equals("")) {
+			int[] prev = parseBoard(prevBoard);
+			BasicTicTacToe board = boards[prev[0]][prev[1]];
+			if(board.getWinner().equals("") || 
+					board.getWinner().equals("XO"))
+				board.setHighlighted(false);
+		}
+		
+		// set the next correct board
+		correctBoard = pos;
+		int[] curr = parseBoard(correctBoard);
+		checkCompleted(curr[0], curr[1]);
+	}
+	
+	/* Helper method for setNextBoard() to adjust the correctBoard depending on if a board is completed or not */
+	public static boolean checkCompleted(int r, int c) {
+		if(!boards[r][c].getWinner().equals("")) {
+			correctBoard = "";
+			return true;
+		}
+		else {
+			boards[r][c].setHighlighted(true);
+			return false;
+		}
+	}
+	
+	public static void updateMessage() {
+		if(correctBoard.equals("")) {
+			msg.setText(whoseTurn() + "'s move on any board");
+		}
+		else {
+			msg.setText(whoseTurn() + "'s move on board " + correctBoard);
+		}
+	}
+	
+	/* Called in RestartActionListener */
+	public static void resetGame() {
+		for(int r = 0; r < 3; r++) {
+			for(int c = 0; c < 3; c++) {
+				boards[r][c].resetBoard();
+			}
+		}
+		move = 0;
+		correctBoard = "";
+		msg.setText("Welcome to Ultimate Tic Tac Toe! X moves first on any board");
+		gameOver = false;
+		UndoActionListener.movesList.clear();
+		UndoActionListener.correctBoardList.clear();
+		UndoActionListener.correctBoardList.add(""); // pad the list
+	}
+	
+	/* Helper static method determining whose turn it is */
+	public static String whoseTurn() {
+		if(move%2 == 0)
+			return "X";
+		else
+			return "O";
+	}
+	
+	/* Helper static method for getting the board position from the string */
+	public static int[] parseBoard(String board) {
+		int[] pos = new int[2];
+		pos[0] = Integer.parseInt(board.substring(0, 1));
+		pos[1] = Integer.parseInt(board.substring(1, 2));
+		return pos;
+	}
+	
+	
+	
+	/* Driver */
 	public static void main(String[] args) {
-		// generate the game
-		new UltimateTicTacToe();
+		UltimateTicTacToe game = new UltimateTicTacToe();
+		JFrame frame = new JFrame();
+		frame.add(game);
+		frame.setVisible(true);
+		frame.setTitle("Ultimate Tic-Tac-Toe");
+		frame.setSize(625, 680);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+		frame.setLocationRelativeTo(null);
 	}
 
 }

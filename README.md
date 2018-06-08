@@ -1,7 +1,7 @@
 # Ultimate TicTacToe
-Play Ultimate TicTacToe
+Play Ultimate TicTacToe, a highly strategical game of TicTacToe involving "checkmates" much like in chess!
 
-I started this project on 12/2/17, MLH Local Hack Day. Ultimate Tic Tac Toe is a highly strategical game of Tic Tac Toe, where a player has to complete three tic tac toe boards in order to win. 
+The goal of Ultimate TicTacToe is to complete three tictactoe boards to win the entire game. 
 
 The catch is that your move on one of the smaller boards will send your opponent to the corresponding board. 
 Example below:
