@@ -1,3 +1,6 @@
-.git_ignore
+.gitignore
 .DS_Store
 .bash.swp
+.settings
+.project
+
