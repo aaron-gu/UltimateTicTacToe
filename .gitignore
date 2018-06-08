@@ -1,1 +1,3 @@
-/bin/
+.git_ignore
+.DS_Store
+.bash.swp
